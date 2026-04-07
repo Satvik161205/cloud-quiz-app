@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Quiz App{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container {
+        max-width: 800px;
+    }
+
+    .welcome {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .welcome-icon {
+        font-size: 50px;
+        margin-bottom: 10px;
+    }
+
+    .username {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .stat-card:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-5px);
+    }
+
+    .stat-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+    }
+
+    .actions {
+        margin-top: 30px;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .logout-btn {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        margin-top: 20px;
+    }
+
+    .recent-activity {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 30px;
+    }
+
+    .recent-activity h3 {
+        color: white;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+
+    .activity-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        color: white;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="welcome">
+    <div class="welcome-icon">🎉</div>
+    <h1>Welcome, <span class="username">{{ current_user.username }}</span>!</h1>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value">{{ total_quizzes }}</div>
+        <div class="stat-label">Quizzes Taken</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">💯</div>
+        <div class="stat-value">{{ avg_score }}%</div>
+        <div class="stat-label">Avg Score</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value">{{ high_score }}%</div>
+        <div class="stat-label">Best Score</div>
+    </div>
+</div>
+
+<div class="actions">
+    <div class="action-grid">
+        <a href="{{ url_for('quiz') }}" class="btn">🎯 Start New Quiz</a>
+        <a href="{{ url_for('admin') }}" class="btn secondary-btn">⚙️ Admin Panel</a>
+    </div>
+</div>
+
+<div class="recent-activity">
+    <h3>🔥 Recent Activity</h3>
+    {% if recent_scores %}
+        {% for score in recent_scores %}
+            <div class="activity-item">
+                Quiz completed with {{ score.score }}% score
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="activity-item">No recent activity. Start your first quiz!</div>
+    {% endif %}
+</div>
+
+<form method="POST" action="{{ url_for('logout') }}">
+    <button type="submit" class="btn logout-btn">Logout</button>
+</form>
+{% endblock %}

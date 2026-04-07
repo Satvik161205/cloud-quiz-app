@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Results - Quiz App{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-container {
+        text-align: center;
+    }
+
+    .result-icon {
+        font-size: 100px;
+        margin-bottom: 20px;
+        animation: celebrate 1s ease-out;
+    }
+
+    @keyframes celebrate {
+        0% {
+            transform: scale(0) rotate(0deg);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.2) rotate(180deg);
+        }
+        100% {
+            transform: scale(1) rotate(360deg);
+            opacity: 1;
+        }
+    }
+
+    .score-circle {
+        width: 200px;
+        height: 200px;
+        margin: 30px auto;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(240, 147, 251, 0.3) 0%, rgba(245, 87, 108, 0.3) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        animation: scaleIn 0.8s ease-out;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .score-circle::before {
+        content: '';
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+    }
+
+    .score-value {
+        font-size: 60px;
+        font-weight: bold;
+        color: white;
+        z-index: 1;
+    }
+
+    .score-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 18px;
+        margin-bottom: 30px;
+    }
+
+    .performance {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+
+    .performance-title {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .performance-message {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .stat-box {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+    }
+
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #f093fb;
+        position: absolute;
+        animation: confetti-fall 3s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+        to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    @media (max-width: 600px) {
+        .score-circle {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .score-circle::before {
+            width: 170px;
+            height: 170px;
+        }
+        
+        .score-value {
+            font-size: 48px;
+        }
+        
+        .result-icon {
+            font-size: 80px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    {% if score >= 80 %}
+        <div class="result-icon">🎉</div>
+    {% elif score >= 60 %}
+        <div class="result-icon">😊</div>
+    {% elif score >= 40 %}
+        <div class="result-icon">📚</div>
+    {% else %}
+        <div class="result-icon">💪</div>
+    {% endif %}
+
+    <h1>Quiz Complete!</h1>
+
+    <div class="score-circle">
+        <div class="score-value">{{ score|int }}%</div>
+    </div>
+    <div class="score-label">Your Score</div>
+
+    <div class="performance">
+        {% if score >= 80 %}
+            <div class="performance-title">🌟 Outstanding!</div>
+            <div class="performance-message">Incredible work! You've mastered this topic. Keep up the excellent performance!</div>
+        {% elif score >= 60 %}
+            <div class="performance-title">👍 Good Job!</div>
+            <div class="performance-message">Well done! You have a solid understanding. A bit more practice and you'll be a pro!</div>
+        {% elif score >= 40 %}
+            <div class="performance-title">📖 Keep Learning!</div>
+            <div class="performance-message">You're making progress! Review the material and try again. You've got this!</div>
+        {% else %}
+            <div class="performance-title">💪 Never Give Up!</div>
+            <div class="performance-message">Every expert was once a beginner. Study the content and come back stronger!</div>
+        {% endif %}
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="stat-value">{{ correct }}</div>
+            <div class="stat-label">✓ Correct</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">{{ total - correct }}</div>
+            <div class="stat-label">✗ Incorrect</div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('quiz') }}" class="btn">🔄 Try Again</a>
+        <a href="{{ url_for('dashboard') }}" class="btn secondary-btn">← Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+    // Create confetti effect for high scores
+    {% if score >= 80 %}
+    function createConfetti() {
+        const colors = ['#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b'];
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }, i * 50);
+        }
+    }
+    
+    // Run confetti animation
+    createConfetti();
+    {% endif %}
+</script>
+{% endblock %}

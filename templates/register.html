@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Quiz App{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .register-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+        animation: rotate 3s ease-in-out infinite;
+    }
+
+    @keyframes rotate {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(10deg); }
+    }
+
+    .password-strength {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        margin-top: -15px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .password-strength-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #f093fb, #f5576c);
+        transition: width 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-header">
+    <div class="register-icon">🚀</div>
+    <h2>Create Account</h2>
+</div>
+
+<form method="POST" action="{{ url_for('register') }}">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+    
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+    
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+    <div class="password-strength">
+        <div class="password-strength-bar"></div>
+    </div>
+    
+    <button type="submit">Create Account</button>
+</form>
+
+<a href="{{ url_for('login') }}" class="link">Already have an account? Login here</a>
+<a href="{{ url_for('index') }}" class="link">← Back to Home</a>
+
+<script>
+    // Simple password strength indicator
+    document.getElementById('password').addEventListener('input', function(e) {
+        const strength = Math.min((e.target.value.length / 12) * 100, 100);
+        document.querySelector('.password-strength-bar').style.width = strength + '%';
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Quiz App{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .login-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .divider {
+        text-align: center;
+        margin: 20px 0;
+        position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 40%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .divider::before {
+        left: 0;
+    }
+
+    .divider::after {
+        right: 0;
+    }
+
+    .divider span {
+        color: rgba(255, 255, 255, 0.8);
+        padding: 0 15px;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-header">
+    <div class="login-icon">👋</div>
+    <h2>Welcome Back!</h2>
+</div>
+
+<form method="POST" action="{{ url_for('login') }}">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+    
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+    
+    <button type="submit">Login</button>
+</form>
+
+<div class="divider">
+    <span>OR</span>
+</div>
+
+<a href="{{ url_for('register') }}" class="link">Don't have an account? Register here</a>
+<a href="{{ url_for('index') }}" class="link">← Back to Home</a>
+{% endblock %}
